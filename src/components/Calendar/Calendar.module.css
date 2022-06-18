@@ -1,0 +1,63 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  margin: 20px;
+  border: 1px solid rgb(211, 211, 211);
+  width: fit-content;
+}
+
+.header {
+  display: flex;
+  flex-direction: row;
+}
+
+.weekdays {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 110px;
+  height: 40px;
+  border: 1px solid rgb(211, 211, 211);
+}
+
+.weekdays:first-child {
+  width: 110px;
+  margin-left: 81px;
+  border-left: 2px solid rgb(211, 211, 211);
+}
+
+.hours {
+  display: flex;
+  flex-direction: column;
+}
+
+.hour {
+  border: 1px solid rgb(211, 211, 211);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 80px;
+  height: 50px;
+}
+
+.innerContainer {
+  display: flex;
+  flex-direction: row;
+}
+
+.grid {
+  display: flex;
+}
+
+.dailyHours {
+  display: flex;
+  flex-direction: column;
+}
+
+.dailyHour {
+  display: flex;
+  justify-content: center;
+  width: 110px;
+  height: 50px;
+  border: 1px solid rgb(211, 211, 211);
+}
