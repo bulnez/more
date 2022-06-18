@@ -6,12 +6,11 @@ const AddBlock = ({ clickHandler }) => {
   const initState = {
     id: 5,
     name: "",
-    day: 0,
-    from: 0,
-    to: 0,
+    day: 1,
+    from: 1,
+    to: 1,
   };
   const [newBlock, setNewBlock] = useState(initState);
-  console.log(clickHandler);
 
   const handleNameChange = (e) => {
     setNewBlock({ ...newBlock, name: e.target.value });

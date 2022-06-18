@@ -1,4 +1,9 @@
 CHANGELOG
 
-MORE-001 --- 0.0.2 
+MORE-002 --- 0.2.1 
+[fix] Fix inital values in the form
+
+===
+
+MORE-001 --- 0.2.0
 [add] Basic functionality
