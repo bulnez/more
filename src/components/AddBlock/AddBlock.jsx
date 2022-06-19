@@ -9,6 +9,7 @@ const AddBlock = ({ clickHandler }) => {
     day: 1,
     from: 1,
     to: 1,
+    isTemporary: false,
   };
   const [newBlock, setNewBlock] = useState(initState);
 
