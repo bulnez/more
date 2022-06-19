@@ -1,5 +1,10 @@
 CHANGELOG
 
+MORE-003 --- 0.3.0 
+[add] Add block by click, hold and drag
+
+===
+
 MORE-002 --- 0.2.1 
 [fix] Fix inital values in the form
 

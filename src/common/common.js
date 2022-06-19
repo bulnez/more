@@ -44,6 +44,7 @@ export const initBlocks = [
     from: 7,
     to: 10,
     name: "Working",
+    isTemporary: false,
   },
   {
     id: 2,
@@ -51,6 +52,7 @@ export const initBlocks = [
     from: 15,
     to: 18,
     name: "Fitness",
+    isTemporary: false,
   },
   {
     id: 3,
@@ -58,5 +60,15 @@ export const initBlocks = [
     from: 10,
     to: 12,
     name: "Cook",
+    isTemporary: false,
   },
 ];
+
+export const initTempBlock = {
+  id: 6,
+  day: 0,
+  from: 0,
+  to: 0,
+  name: "Temporary",
+  isTemporary: true,
+};
