@@ -1,17 +1,24 @@
 .block {
-  position: absolute;
-  width: 90px;
-  border: 2px solid black;
-  border-radius: 5px;
-  background-color: rgb(255, 209, 209);
+  position: relative;
+  width: 135px;
+  border-radius: 0px 15px 15px 0px;
+  background-color: #61616162;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  pointer-events: auto;
+  color: white;
+  filter: drop-shadow(5px 5px 5px rgba(0, 0, 0, 0.162));
+  margin-right: 15px;
+}
+
+.block:hover {
+  z-index: 2;
 }
 
 .tempBlock {
-  position: absolute;
-  width: 90px;
-  border: 2px solid black;
-  border-radius: 5px;
-  background: transparent;
+  composes: block;
   pointer-events: none;
 }
 
@@ -19,6 +26,100 @@
   cursor: move;
 }
 
-.unselectable {
+.heading {
+  margin: 0;
+  padding: 10px;
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none; /* Safari */
+  -khtml-user-select: none; /* Konqueror HTML */
+  -moz-user-select: none; /* Old versions of Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
   user-select: none;
+  word-break: break-all;
+}
+
+.iconsRow {
+  display: none;
+}
+
+.iconsRowActive {
+  display: flex;
+  gap: 8px;
+  padding-bottom: 10px;
+}
+
+.icon:hover {
+  cursor: pointer;
+  transform: scale(1.1);
+  transition: ease-in 0.1s;
+}
+
+.nameInput {
+  background: transparent;
+  border: none;
+  width: 100%;
+  padding-top: 10px;
+  font-size: 15px;
+  text-align: center;
+  word-break: break-all;
+  resize: none;
+}
+
+.nameInput:focus {
+  outline: none;
+}
+
+.colorContainer {
+  position: absolute;
+  width: 125px;
+  height: 30px;
+  background-color: white;
+  border: 1px solid rgba(128, 128, 128, 0.404);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1em;
+  border-radius: 5px;
+  filter: drop-shadow(5px 5px 5px rgba(0, 0, 0, 0.242));
+  bottom: -40px;
+}
+
+.colors {
+  position: relative;
+  height: 15px;
+  width: 15px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.colors:hover {
+  transform: scale(1.1);
+  cursor: pointer;
+  transition: ease-in 0.2s;
+}
+
+.red {
+  background-color: red;
+}
+
+.green {
+  background-color: green;
+}
+
+.yellow {
+  background-color: yellow;
+}
+
+.blue {
+  background-color: blue;
+}
+
+.check {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  top: 0;
+  left: 0;
 }

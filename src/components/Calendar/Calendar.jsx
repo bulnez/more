@@ -9,6 +9,7 @@ import {
 import AddBlock from "../AddBlock/AddBlock";
 import Block from "../Block/Block";
 import styles from "./Calendar.module.css";
+import { v4 as uuid } from "uuid";
 
 const Calendar = () => {
   const [blocks, setBlocks] = useState(initBlocks);
@@ -19,26 +20,46 @@ const Calendar = () => {
   };
 
   const handleTemporaryBlockDown = (day, hr) => {
-    setTempBlock({ ...tempBlock, isTemporary: true, day, from: hr });
+    const isPlaceOccupied = blocks.some(
+      (block) => block.day === day && block.from === hr
+    );
+    !isPlaceOccupied &&
+      setTempBlock({ ...tempBlock, isTemporary: true, day, from: hr });
   };
 
   const handleTemporaryBlockMove = (hr) => {
-    if (tempBlock.isTemporary) {
+    if (tempBlock.isTemporary && tempBlock.from !== 0) {
       setTempBlock({ ...tempBlock, to: hr + 1 });
-      console.log("asdasd");
     }
   };
 
-  const handleTemporaryBlockUp = (endHour) => {
-    setTempBlock({
-      ...tempBlock,
-      isTemporary: false,
-      name: "Not temporary",
+  const handleTemporaryBlockUp = () => {
+    tempBlock.from &&
+      setTempBlock({
+        ...tempBlock,
+        id: uuid(),
+        isTemporary: false,
+        name: "Not temporary",
+      });
+  };
+
+  const deleteBlock = (id) => {
+    const newBlocks = blocks.filter((block) => block.id !== id);
+    setBlocks(newBlocks);
+  };
+
+  const editBlockDetails = (id, detail, value) => {
+    const newState = blocks.map((block) => {
+      if (block.id === id) {
+        return { ...block, [detail]: value };
+      }
+      return block;
     });
+    setBlocks(newState);
   };
 
   useEffect(() => {
-    if (!tempBlock.isTemporary) {
+    if (tempBlock !== initTempBlock && !tempBlock.isTemporary) {
       setBlocks([...blocks, tempBlock]);
       setTempBlock(initTempBlock);
     }
@@ -73,7 +94,7 @@ const Calendar = () => {
                       handleTemporaryBlockDown(dayIndex + 1, hoursIndex + 1)
                     }
                     onMouseMove={() => handleTemporaryBlockMove(hoursIndex + 1)}
-                    onMouseUp={() => handleTemporaryBlockUp(hoursIndex + 1)}
+                    onMouseUp={handleTemporaryBlockUp}
                   >
                     {/* BLOCKS */}
                     {blocks.map(
@@ -81,12 +102,17 @@ const Calendar = () => {
                         block.day === dayIndex + 1 &&
                         block.from === hoursIndex + 1 && (
                           <Block
+                            id={block.id}
                             isTemporary={block.isTemporary}
                             name={block.name}
+                            color={block.color}
                             duration={block.to - block.from}
+                            deleteHandler={() => deleteBlock(block.id)}
+                            editBlockDetails={editBlockDetails}
                           />
                         )
                     )}
+                    {/* TEMPORARY BLOCK */}
                     {tempBlock.day === dayIndex + 1 &&
                       tempBlock.from === hoursIndex + 1 && (
                         <Block
