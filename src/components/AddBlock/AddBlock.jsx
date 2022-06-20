@@ -18,17 +18,14 @@ const AddBlock = ({ clickHandler }) => {
   };
 
   const handleDayChange = (e) => {
-    console.log(e.target.value);
     setNewBlock({ ...newBlock, day: parseInt(e.target.value) });
   };
 
   const handleHourFromChange = (e) => {
-    console.log(e.target.value);
     setNewBlock({ ...newBlock, from: parseInt(e.target.value) });
   };
 
   const handleHourToChange = (e) => {
-    console.log(e.target.value);
     setNewBlock({ ...newBlock, to: parseInt(e.target.value) });
   };
 

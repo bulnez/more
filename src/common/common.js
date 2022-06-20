@@ -1,3 +1,5 @@
+import { v4 as uuid } from "uuid";
+
 export const weekdays = [
   "monday",
   "tuesday",
@@ -39,7 +41,8 @@ export const days = new Array(7).fill("");
 
 export const initBlocks = [
   {
-    id: 1,
+    id: uuid(),
+    color: "#616161",
     day: 1,
     from: 7,
     to: 10,
@@ -47,7 +50,8 @@ export const initBlocks = [
     isTemporary: false,
   },
   {
-    id: 2,
+    id: uuid(),
+    color: "#616161",
     day: 3,
     from: 15,
     to: 18,
@@ -55,7 +59,8 @@ export const initBlocks = [
     isTemporary: false,
   },
   {
-    id: 3,
+    id: uuid(),
+    color: "#616161",
     day: 7,
     from: 10,
     to: 12,
@@ -65,7 +70,8 @@ export const initBlocks = [
 ];
 
 export const initTempBlock = {
-  id: 6,
+  id: 0,
+  color: "#616161",
   day: 0,
   from: 0,
   to: 0,

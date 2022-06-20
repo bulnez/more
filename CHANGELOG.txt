@@ -1,5 +1,11 @@
 CHANGELOG
 
+MORE-004 --- 0.4.0 
+[add] Add block edit options (delete, edit name, change color)
+[add] Add more pleasant styling to the blocks
+
+===
+
 MORE-003 --- 0.3.0 
 [add] Add block by click, hold and drag
 

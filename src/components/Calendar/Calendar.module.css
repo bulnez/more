@@ -1,4 +1,5 @@
 .container {
+  position: relative;
   display: flex;
   flex-direction: column;
   margin: 20px;
@@ -12,26 +13,29 @@
 }
 
 .weekdays {
+  position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 110px;
+  width: 150px;
   height: 40px;
   border: 1px solid rgb(211, 211, 211);
 }
 
 .weekdays:first-child {
-  width: 110px;
+  width: 150px;
   margin-left: 81px;
   border-left: 2px solid rgb(211, 211, 211);
 }
 
 .hours {
+  position: relative;
   display: flex;
   flex-direction: column;
 }
 
 .hour {
+  position: relative;
   border: 1px solid rgb(211, 211, 211);
   display: flex;
   justify-content: center;
@@ -41,15 +45,18 @@
 }
 
 .innerContainer {
+  position: relative;
   display: flex;
   flex-direction: row;
 }
 
 .grid {
+  position: relative;
   display: flex;
 }
 
 .dailyHours {
+  position: relative;
   display: flex;
   flex-direction: column;
 }
@@ -57,7 +64,7 @@
 .dailyHour {
   display: flex;
   justify-content: center;
-  width: 110px;
+  width: 150px;
   height: 30px;
   border: 1px solid rgb(211, 211, 211);
 }
