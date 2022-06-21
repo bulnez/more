@@ -11,6 +11,7 @@ export const weekdays = [
 ];
 
 export const hours = [
+  "0:00",
   "1:00",
   "2:00",
   "3:00",
@@ -34,7 +35,6 @@ export const hours = [
   "21:00",
   "22:00",
   "23:00",
-  "24:00",
 ];
 
 export const days = new Array(7).fill("");
@@ -44,10 +44,11 @@ export const initBlocks = [
     id: uuid(),
     color: "#616161",
     day: 1,
-    from: 7,
-    to: 10,
+    from: 0,
+    to: 5,
     name: "Working",
     isTemporary: false,
+    editMode: false,
   },
   {
     id: uuid(),
@@ -57,6 +58,7 @@ export const initBlocks = [
     to: 18,
     name: "Fitness",
     isTemporary: false,
+    editMode: false,
   },
   {
     id: uuid(),
@@ -66,6 +68,7 @@ export const initBlocks = [
     to: 12,
     name: "Cook",
     isTemporary: false,
+    editMode: false,
   },
 ];
 

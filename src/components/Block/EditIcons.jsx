@@ -4,6 +4,7 @@ import { FiEdit, FiCheck } from "react-icons/fi";
 import { BiColorFill } from "react-icons/bi";
 import { MdDelete } from "react-icons/md";
 import { GrFormClose } from "react-icons/gr";
+import { IoMdResize } from "react-icons/io";
 
 const EditIcons = ({
   iconsActive,
@@ -14,6 +15,7 @@ const EditIcons = ({
   editNameClose,
   showColorPicker,
   colorPicker,
+  resizeBlock,
 }) => {
   return isEditingActive ? (
     <div className={styles.iconsRowActive}>
@@ -29,6 +31,7 @@ const EditIcons = ({
           className={styles.icon}
           onClick={() => showColorPicker(!colorPicker)}
         />
+        <IoMdResize className={styles.icon} onClick={() => resizeBlock()} />
         <MdDelete className={styles.icon} onClick={deleteHandler} />
       </div>
     </>

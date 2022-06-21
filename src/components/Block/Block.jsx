@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import styles from "./Block.module.css";
 import ColorPicker from "./ColorPicker";
 import EditIcons from "./EditIcons";
@@ -7,10 +7,13 @@ const Block = ({
   name,
   id,
   color,
+  from,
+  to,
   duration,
   isTemporary,
   deleteHandler,
   editBlockDetails,
+  currentPosition,
 }) => {
   const [iconsActive, setIconsActive] = useState(false);
   const [editName, setEditName] = useState(false);
@@ -57,7 +60,7 @@ const Block = ({
       <p className={styles.heading}>{name}</p>
     </div>
   ) : (
-    <>
+    <div className={styles.blockContainer}>
       <div
         className={styles.block}
         style={{
@@ -78,7 +81,12 @@ const Block = ({
             onFocus={(e) => (e.target.selectionStart = e.target.value.length)}
           />
         ) : (
-          <p className={styles.heading}>{name}</p>
+          <div className={styles.textContainerRow}>
+            <p className={styles.heading}>{name}</p>
+            {duration > 2 && (
+              <p className={styles.hours}>{`${from}:00 - ${to}:00`}</p>
+            )}
+          </div>
         )}
         <EditIcons
           iconsActive={iconsActive}
@@ -89,6 +97,7 @@ const Block = ({
           editNameClose={editNameClose}
           showColorPicker={setColorPicker}
           colorPicker={colorPicker}
+          // resizeBlock={resizeBlock}
         />
         {iconsActive && (
           <ColorPicker
@@ -98,7 +107,7 @@ const Block = ({
           />
         )}
       </div>
-    </>
+    </div>
   );
 };
 

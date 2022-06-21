@@ -6,7 +6,6 @@ import {
   initBlocks,
   initTempBlock,
 } from "../../common/common";
-import AddBlock from "../AddBlock/AddBlock";
 import Block from "../Block/Block";
 import styles from "./Calendar.module.css";
 import { v4 as uuid } from "uuid";
@@ -14,10 +13,10 @@ import { v4 as uuid } from "uuid";
 const Calendar = () => {
   const [blocks, setBlocks] = useState(initBlocks);
   const [tempBlock, setTempBlock] = useState(initTempBlock);
-
-  const handleParentClick = (newBlock) => {
-    setBlocks([...blocks, newBlock]);
-  };
+  const [currentPosition, setCurrentPosition] = useState({
+    day: 0,
+    hr: 0,
+  });
 
   const handleTemporaryBlockDown = (day, hr) => {
     const isPlaceOccupied = blocks.some(
@@ -27,9 +26,10 @@ const Calendar = () => {
       setTempBlock({ ...tempBlock, isTemporary: true, day, from: hr });
   };
 
-  const handleTemporaryBlockMove = (hr) => {
-    if (tempBlock.isTemporary && tempBlock.from !== 0) {
-      setTempBlock({ ...tempBlock, to: hr + 1 });
+  const handleTemporaryBlockMove = (day, hr) => {
+    setCurrentPosition({ ...currentPosition, day, hr });
+    if (tempBlock.isTemporary) {
+      setTempBlock({ ...tempBlock, to: hr });
     }
   };
 
@@ -59,9 +59,15 @@ const Calendar = () => {
   };
 
   useEffect(() => {
-    if (tempBlock !== initTempBlock && !tempBlock.isTemporary) {
+    if (
+      tempBlock !== initTempBlock &&
+      !tempBlock.isTemporary
+      // && tempBlock.to - tempBlock.from > 1
+    ) {
       setBlocks([...blocks, tempBlock]);
       setTempBlock(initTempBlock);
+      // } else if (!tempBlock.isTemporary && tempBlock.to - tempBlock.from < 2) {
+      //   setTempBlock(initTempBlock);
     }
   }, [tempBlock, blocks]);
 
@@ -79,7 +85,9 @@ const Calendar = () => {
           {/* HOURS */}
           <div className={styles.hours}>
             {hours.map((hr) => (
-              <div className={styles.hour}>{hr}</div>
+              <div className={styles.hour}>
+                <p className={styles.hr}>{hr}</p>
+              </div>
             ))}
           </div>
           {/* HOURS */}
@@ -91,30 +99,35 @@ const Calendar = () => {
                   <div
                     className={styles.dailyHour}
                     onMouseDown={() =>
-                      handleTemporaryBlockDown(dayIndex + 1, hoursIndex + 1)
+                      handleTemporaryBlockDown(dayIndex + 1, hoursIndex)
                     }
-                    onMouseMove={() => handleTemporaryBlockMove(hoursIndex + 1)}
+                    onMouseMove={() =>
+                      handleTemporaryBlockMove(dayIndex + 1, hoursIndex)
+                    }
                     onMouseUp={handleTemporaryBlockUp}
                   >
                     {/* BLOCKS */}
                     {blocks.map(
                       (block) =>
                         block.day === dayIndex + 1 &&
-                        block.from === hoursIndex + 1 && (
+                        block.from === hoursIndex && (
                           <Block
                             id={block.id}
                             isTemporary={block.isTemporary}
                             name={block.name}
                             color={block.color}
+                            from={block.from}
+                            to={block.to}
                             duration={block.to - block.from}
                             deleteHandler={() => deleteBlock(block.id)}
                             editBlockDetails={editBlockDetails}
+                            currentPosition={currentPosition}
                           />
                         )
                     )}
                     {/* TEMPORARY BLOCK */}
                     {tempBlock.day === dayIndex + 1 &&
-                      tempBlock.from === hoursIndex + 1 && (
+                      tempBlock.from === hoursIndex && (
                         <Block
                           isTemporary={tempBlock.isTemporary}
                           name="temporary"
@@ -129,7 +142,6 @@ const Calendar = () => {
           </div>
         </div>
       </div>
-      <AddBlock clickHandler={handleParentClick} />
     </>
   );
 };
