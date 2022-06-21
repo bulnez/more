@@ -6,7 +6,7 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  align-items: center;
+  align-items: left;
   pointer-events: auto;
   color: white;
   filter: drop-shadow(5px 5px 5px rgba(0, 0, 0, 0.162));
@@ -22,13 +22,18 @@
   pointer-events: none;
 }
 
-.tempBlock:hover {
-  cursor: move;
+.textContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
 }
 
 .heading {
+  font-size: 12px;
+  text-align: left;
   margin: 0;
   padding: 10px;
+  padding-bottom: 0;
   -webkit-touch-callout: none; /* iOS Safari */
   -webkit-user-select: none; /* Safari */
   -khtml-user-select: none; /* Konqueror HTML */
@@ -38,6 +43,13 @@
   word-break: break-all;
 }
 
+.hours {
+  padding-left: 10px;
+  margin: 0;
+  font-size: 12px;
+  text-align: left;
+}
+
 .iconsRow {
   display: none;
 }
@@ -45,7 +57,7 @@
 .iconsRowActive {
   display: flex;
   gap: 8px;
-  padding-bottom: 10px;
+  padding: 10px;
 }
 
 .icon:hover {
@@ -58,11 +70,13 @@
   background: transparent;
   border: none;
   width: 100%;
-  padding-top: 10px;
-  font-size: 15px;
-  text-align: center;
+  padding: 10px;
+  padding-bottom: 0;
+  font-size: 12px;
+  text-align: left;
   word-break: break-all;
   resize: none;
+  color: white;
 }
 
 .nameInput:focus {
@@ -122,4 +136,21 @@
   height: 14px;
   top: 0;
   left: 0;
+}
+
+.down {
+  position: absolute;
+  width: 120px;
+  height: 5px;
+  resize: vertical;
+  pointer-events: none;
+}
+
+.down:hover {
+  cursor: n-resize;
+}
+
+.up:active {
+  cursor: grabbing;
+  pointer-events: none;
 }
