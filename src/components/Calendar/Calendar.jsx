@@ -85,17 +85,15 @@ const Calendar = () => {
   useEffect(() => {
     if (
       tempBlock !== initTempBlock &&
-      !tempBlock.isTemporary
-      // && tempBlock.to - tempBlock.from > 1
+      !tempBlock.isTemporary &&
+      tempBlock.to - tempBlock.from > 0
     ) {
       setBlocks([...blocks, tempBlock]);
       setTempBlock(initTempBlock);
-      // } else if (!tempBlock.isTemporary && tempBlock.to - tempBlock.from < 2) {
-      //   setTempBlock(initTempBlock);
+    } else if (!tempBlock.isTemporary && tempBlock.to - tempBlock.from < 2) {
+      setTempBlock(initTempBlock);
     }
   }, [tempBlock, blocks]);
-
-  // console.log(blocks[2]);
 
   return (
     <>
@@ -103,10 +101,14 @@ const Calendar = () => {
         {/* WEEKDAYS */}
         <div className={styles.header}>
           {weekdays.map((weekday) => (
-            <div className={styles.weekdays}>{weekday}</div>
+            <>
+              <div className={styles.weekdays}>
+                <span className={styles.date}>15</span>
+                <p className={styles.weekday}>{weekday}</p>
+              </div>
+            </>
           ))}
         </div>
-        {/* WEEKDAYS */}
         <div className={styles.innerContainer}>
           {/* HOURS */}
           <div className={styles.hours}>
@@ -116,7 +118,6 @@ const Calendar = () => {
               </div>
             ))}
           </div>
-          {/* HOURS */}
           <div className={styles.grid}>
             {/* DAYS */}
             {days.map((day, dayIndex) => (
@@ -174,7 +175,6 @@ const Calendar = () => {
                       blockClone.from === hoursIndex && (
                         <Block
                           isTemporary={blockClone.active}
-                          name="temporary"
                           duration={blockClone.to - blockClone.from}
                         />
                       )}

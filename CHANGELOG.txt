@@ -1,5 +1,11 @@
 CHANGELOG
 
+MORE-009 --- 0.8.0 
+[add] Styling improvements of the calendar
+[fix] Small bugfixes related to the adding of new blocks
+
+===
+
 MORE-008 --- 0.7.0 
 [add] Clone transparent block when moving a block
 

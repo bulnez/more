@@ -66,15 +66,15 @@ const Block = ({
       editNameClose();
     }
   };
-  console.log(blockClone);
+
   const onDragBlock = (e) => {
     setIconsActive(true);
     let tempDay = getDay(e.clientX, e.clientY);
     let tempHour = getHour(e.clientX, e.clientY);
-    console.log(tempDay, tempHour);
     tempDay && setNewDay(parseInt(tempDay) + 1);
     tempHour && setNewFrom(tempHour);
-    const newTo = parseInt(newFrom) + duration;
+    const newTo =
+      parseInt(newFrom) + duration > 24 ? 24 : parseInt(newFrom) + duration;
     const nday = parseInt(tempDay) + 1;
     setBlockClone({
       ...blockClone,
@@ -90,23 +90,20 @@ const Block = ({
   }, [newHour]);
 
   return isTemporary ? (
-    <div
-      className={styles.tempBlock}
-      style={{ height: `${duration * 31.5}px` }}
-    >
+    <div className={styles.tempBlock} style={{ height: `${duration * 60}px` }}>
       <p className={styles.heading}>{name}</p>
     </div>
   ) : (
     <div
       className={styles.blockContainer}
       style={{
-        height: `${duration * 31.5}px`,
+        height: `${duration * 60}px`,
       }}
     >
       <div
         className={styles.block}
         style={{
-          height: `${duration * 31.5}px`,
+          height: `${duration * 60}px`,
           backgroundColor: color,
         }}
         onMouseEnter={() => setIconsActive(true)}
@@ -118,12 +115,17 @@ const Block = ({
         }}
         onDrag={onDragBlock}
         onDragEnd={() => {
-          const newTo = parseInt(newFrom) + duration;
-          editMultipleDetails(
-            id,
-            ["day", "from", "to"],
-            [parseInt(newDay), parseInt(newFrom), newTo]
-          );
+          const newTo =
+            parseInt(newFrom) + duration > 24
+              ? 24
+              : parseInt(newFrom) + duration;
+          console.log(from, newFrom);
+          newFrom !== 0 &&
+            editMultipleDetails(
+              id,
+              ["day", "from", "to"],
+              [parseInt(newDay), parseInt(newFrom), newTo]
+            );
           setNewDay(0);
           setNewFrom(0);
           setDragging(false);
@@ -143,7 +145,7 @@ const Block = ({
         ) : (
           <div className={styles.textContainerRow}>
             <p className={styles.heading}>{name}</p>
-            {duration > 2 && (
+            {duration > 1 && (
               <p className={styles.hours}>{`${from}:00 - ${to}:00`}</p>
             )}
           </div>
@@ -167,31 +169,30 @@ const Block = ({
         )}
       </div>
       {iconsActive && (
-        <>
-          <span
-            className={`${styles.handle}`}
-            onDragStart={() => {
-              setIconsActive(true);
-              setDragging(true);
-            }}
-            onDrag={(e) => {
-              let hour = getHour(e.clientX, e.clientY);
-              hour && setNewHour(hour);
-            }}
-            onDragEnd={() => {
-              setNewHour(0);
-              setDragging(false);
-            }}
-            onMouseEnter={() => {
-              setIconsActive(true);
-            }}
-            onMouseLeave={() => !dragging && setIconsActive(false)}
-          >
-            <p className={styles.arrowIcon} autoFocus="autofocus">
-              ↕
-            </p>
-          </span>
-        </>
+        <span
+          className={`${styles.handle}`}
+          onDragStart={() => {
+            setIconsActive(true);
+            setDragging(true);
+          }}
+          onDrag={(e) => {
+            let hour = getHour(e.clientX, e.clientY);
+            console.log(hour, from);
+            hour && hour > from && setNewHour(hour);
+          }}
+          onDragEnd={() => {
+            setNewHour(0);
+            setDragging(false);
+          }}
+          onMouseEnter={() => {
+            setIconsActive(true);
+          }}
+          onMouseLeave={() => !dragging && setIconsActive(false)}
+        >
+          <p className={styles.arrowIcon} autoFocus="autofocus">
+            ↕
+          </p>
+        </span>
       )}
     </div>
   );
