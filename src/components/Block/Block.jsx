@@ -13,16 +13,23 @@ const Block = ({
   isTemporary,
   deleteHandler,
   editBlockDetails,
+  editMultipleDetails,
 }) => {
-  const [iconsActive, setIconsActive] = useState(false);
+  const [iconsActive, setIconsActive] = useState(true);
   const [editName, setEditName] = useState(false);
   const [newName, setNewName] = useState(name);
   const [colorPicker, setColorPicker] = useState(false);
   const [newHour, setNewHour] = useState(0);
+  const [newDay, setNewDay] = useState(0);
+  const [newFrom, setNewFrom] = useState(0);
   const [dragging, setDragging] = useState(false);
 
   const getHour = (x, y) => {
     return document.elementFromPoint(x, y).dataset.hourindex;
+  };
+
+  const getDay = (x, y) => {
+    return document.elementFromPoint(x, y).dataset.dayindex;
   };
 
   const changeColor = (value) => {
@@ -61,7 +68,7 @@ const Block = ({
     newHour && editBlockDetails(id, "to", parseInt(newHour));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [newHour]);
-  console.log(dragging);
+
   return isTemporary ? (
     <div
       className={styles.tempBlock}
@@ -84,6 +91,28 @@ const Block = ({
         }}
         onMouseEnter={() => setIconsActive(true)}
         onMouseLeave={() => !colorPicker && setIconsActive(false)}
+        onDragStart={() => {
+          setIconsActive(true);
+          setDragging(true);
+        }}
+        onDrag={(e) => {
+          setIconsActive(true);
+          let day = getDay(e.clientX, e.clientY);
+          let hour = getHour(e.clientX, e.clientY);
+          day && setNewDay(parseInt(day) + 1);
+          hour && setNewFrom(hour);
+        }}
+        onDragEnd={() => {
+          const newDuration = parseInt(newFrom) + duration;
+          editMultipleDetails(
+            id,
+            ["day", "from", "to"],
+            [parseInt(newDay), parseInt(newFrom), newDuration]
+          );
+          setNewDay(0);
+          setNewFrom(0);
+          setDragging(false);
+        }}
       >
         {editName ? (
           <textarea
@@ -122,29 +151,31 @@ const Block = ({
         )}
       </div>
       {iconsActive && (
-        <span
-          className={`${styles.handle}`}
-          onDragStart={() => {
-            setIconsActive(true);
-            setDragging(true);
-          }}
-          onDrag={(e) => {
-            let hour = getHour(e.clientX, e.clientY);
-            hour && setNewHour(hour);
-          }}
-          onDragEnd={() => {
-            setNewHour(0);
-            setDragging(false);
-          }}
-          onMouseEnter={() => {
-            setIconsActive(true);
-          }}
-          onMouseLeave={() => !dragging && setIconsActive(false)}
-        >
-          <p className={styles.arrowIcon} autoFocus="autofocus">
-            ↕
-          </p>
-        </span>
+        <>
+          <span
+            className={`${styles.handle}`}
+            onDragStart={() => {
+              setIconsActive(true);
+              setDragging(true);
+            }}
+            onDrag={(e) => {
+              let hour = getHour(e.clientX, e.clientY);
+              hour && setNewHour(hour);
+            }}
+            onDragEnd={() => {
+              setNewHour(0);
+              setDragging(false);
+            }}
+            onMouseEnter={() => {
+              setIconsActive(true);
+            }}
+            onMouseLeave={() => !dragging && setIconsActive(false)}
+          >
+            <p className={styles.arrowIcon} autoFocus="autofocus">
+              ↕
+            </p>
+          </span>
+        </>
       )}
     </div>
   );

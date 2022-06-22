@@ -1,5 +1,10 @@
 CHANGELOG
 
+MORE-007 --- 0.6.0 
+[add] Move block functionality
+
+===
+
 MORE-006 --- 0.5.0 
 [add] Resize block functionality
 
