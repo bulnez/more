@@ -17,6 +17,12 @@ const Calendar = () => {
     day: 0,
     hr: 0,
   });
+  const [blockClone, setBlockClone] = useState({
+    active: false,
+    day: 0,
+    from: 0,
+    to: 0,
+  });
 
   const handleTemporaryBlockDown = (day, hr) => {
     const isPlaceOccupied = blocks.some(
@@ -139,6 +145,7 @@ const Calendar = () => {
                               isTemporary={block.isTemporary}
                               name={block.name}
                               color={block.color}
+                              day={block.day}
                               from={block.from}
                               to={block.to}
                               duration={block.to - block.from}
@@ -146,6 +153,8 @@ const Calendar = () => {
                               editBlockDetails={editBlockDetails}
                               editMultipleDetails={editMultipleDetails}
                               currentPosition={currentPosition}
+                              blockClone={blockClone}
+                              setBlockClone={setBlockClone}
                             />
                           </>
                         )
@@ -157,6 +166,16 @@ const Calendar = () => {
                           isTemporary={tempBlock.isTemporary}
                           name="temporary"
                           duration={tempBlock.to - tempBlock.from}
+                        />
+                      )}
+                    {/* CLONE BLOCK */}
+                    {blockClone.active &&
+                      blockClone.day === dayIndex + 1 &&
+                      blockClone.from === hoursIndex && (
+                        <Block
+                          isTemporary={blockClone.active}
+                          name="temporary"
+                          duration={blockClone.to - blockClone.from}
                         />
                       )}
                   </div>

@@ -1,5 +1,11 @@
 CHANGELOG
 
+MORE-008 --- 0.7.0 
+[add] Clone transparent block when moving a block
+
+===
+
+
 MORE-007 --- 0.6.0 
 [add] Move block functionality
 

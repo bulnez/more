@@ -7,6 +7,7 @@ const Block = ({
   name,
   id,
   color,
+  day,
   from,
   to,
   duration,
@@ -14,8 +15,10 @@ const Block = ({
   deleteHandler,
   editBlockDetails,
   editMultipleDetails,
+  setBlockClone,
+  blockClone,
 }) => {
-  const [iconsActive, setIconsActive] = useState(true);
+  const [iconsActive, setIconsActive] = useState(false);
   const [editName, setEditName] = useState(false);
   const [newName, setNewName] = useState(name);
   const [colorPicker, setColorPicker] = useState(false);
@@ -63,6 +66,23 @@ const Block = ({
       editNameClose();
     }
   };
+  console.log(blockClone);
+  const onDragBlock = (e) => {
+    setIconsActive(true);
+    let tempDay = getDay(e.clientX, e.clientY);
+    let tempHour = getHour(e.clientX, e.clientY);
+    console.log(tempDay, tempHour);
+    tempDay && setNewDay(parseInt(tempDay) + 1);
+    tempHour && setNewFrom(tempHour);
+    const newTo = parseInt(newFrom) + duration;
+    const nday = parseInt(tempDay) + 1;
+    setBlockClone({
+      ...blockClone,
+      day: nday,
+      from: parseInt(tempHour),
+      to: newTo,
+    });
+  };
 
   useEffect(() => {
     newHour && editBlockDetails(id, "to", parseInt(newHour));
@@ -94,24 +114,20 @@ const Block = ({
         onDragStart={() => {
           setIconsActive(true);
           setDragging(true);
+          setBlockClone({ active: true, day, from, to });
         }}
-        onDrag={(e) => {
-          setIconsActive(true);
-          let day = getDay(e.clientX, e.clientY);
-          let hour = getHour(e.clientX, e.clientY);
-          day && setNewDay(parseInt(day) + 1);
-          hour && setNewFrom(hour);
-        }}
+        onDrag={onDragBlock}
         onDragEnd={() => {
-          const newDuration = parseInt(newFrom) + duration;
+          const newTo = parseInt(newFrom) + duration;
           editMultipleDetails(
             id,
             ["day", "from", "to"],
-            [parseInt(newDay), parseInt(newFrom), newDuration]
+            [parseInt(newDay), parseInt(newFrom), newTo]
           );
           setNewDay(0);
           setNewFrom(0);
           setDragging(false);
+          setBlockClone({ ...blockClone, active: false });
         }}
       >
         {editName ? (
