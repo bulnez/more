@@ -55,6 +55,24 @@ const Calendar = () => {
       }
       return block;
     });
+    console.log(newState);
+    setBlocks(newState);
+  };
+
+  const editMultipleDetails = (id, detailsArr, valuesArr) => {
+    const newState = blocks.map((block) => {
+      if (block.id === id) {
+        return {
+          ...block,
+          [detailsArr[0]]: valuesArr[0],
+          [detailsArr[1]]: valuesArr[1],
+          [detailsArr[2]]: valuesArr[2],
+          //Need to make it scalable, not hardcoded
+        };
+      }
+      return block;
+    });
+    console.log(newState);
     setBlocks(newState);
   };
 
@@ -70,6 +88,8 @@ const Calendar = () => {
       //   setTempBlock(initTempBlock);
     }
   }, [tempBlock, blocks]);
+
+  // console.log(blocks[2]);
 
   return (
     <>
@@ -113,18 +133,21 @@ const Calendar = () => {
                       (block) =>
                         block.day === dayIndex + 1 &&
                         block.from === hoursIndex && (
-                          <Block
-                            id={block.id}
-                            isTemporary={block.isTemporary}
-                            name={block.name}
-                            color={block.color}
-                            from={block.from}
-                            to={block.to}
-                            duration={block.to - block.from}
-                            deleteHandler={() => deleteBlock(block.id)}
-                            editBlockDetails={editBlockDetails}
-                            currentPosition={currentPosition}
-                          />
+                          <>
+                            <Block
+                              id={block.id}
+                              isTemporary={block.isTemporary}
+                              name={block.name}
+                              color={block.color}
+                              from={block.from}
+                              to={block.to}
+                              duration={block.to - block.from}
+                              deleteHandler={() => deleteBlock(block.id)}
+                              editBlockDetails={editBlockDetails}
+                              editMultipleDetails={editMultipleDetails}
+                              currentPosition={currentPosition}
+                            />
+                          </>
                         )
                     )}
                     {/* TEMPORARY BLOCK */}

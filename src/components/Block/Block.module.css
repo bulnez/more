@@ -21,6 +21,7 @@
 
 .block:hover {
   z-index: 2;
+  user-select: all;
 }
 
 .tempBlock {
@@ -40,13 +41,11 @@
   margin: 0;
   padding: 10px;
   padding-bottom: 0;
-  -webkit-touch-callout: none; /* iOS Safari */
-  -webkit-user-select: none; /* Safari */
-  -khtml-user-select: none; /* Konqueror HTML */
-  -moz-user-select: none; /* Old versions of Firefox */
-  -ms-user-select: none; /* Internet Explorer/Edge */
-  user-select: none;
   word-break: break-all;
+}
+
+.heading::selection {
+  background-color: grey;
 }
 
 .hours {
@@ -169,4 +168,26 @@
 
 .arrowIcon::selection {
   background-color: grey;
+}
+
+.handleMove {
+  position: absolute;
+  background-color: grey;
+  width: 15px;
+  height: 35px;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  border-radius: 0px 15px 15px 0px;
+  color: white;
+  right: 1px;
+  pointer-events: all;
+  margin-bottom: 55px;
+}
+
+.handleMove:hover {
+  cursor: grab;
+  transform: scaleY(1.1);
+  transition: ease 0.1s;
+  user-select: all;
 }
