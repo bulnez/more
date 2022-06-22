@@ -98,6 +98,8 @@ const Calendar = () => {
                 {hours.map((hr, hoursIndex) => (
                   <div
                     className={styles.dailyHour}
+                    data-dayIndex={dayIndex}
+                    data-hourIndex={hoursIndex}
                     onMouseDown={() =>
                       handleTemporaryBlockDown(dayIndex + 1, hoursIndex)
                     }
