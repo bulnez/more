@@ -15,11 +15,6 @@ const EditIcons = ({
   editNameClose,
   showColorPicker,
   colorPicker,
-  onDragStart,
-  onDrag,
-  onDragEnd,
-  onMouseEnter,
-  onMouseLeave,
 }) => {
   return isEditingActive ? (
     <div className={styles.iconsRowActive}>
@@ -35,7 +30,6 @@ const EditIcons = ({
           className={styles.icon}
           onClick={() => showColorPicker(!colorPicker)}
         />
-        <IoMdResize className={styles.icon} />
         <MdDelete className={styles.icon} onClick={deleteHandler} />
       </div>
     </>

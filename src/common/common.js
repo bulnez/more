@@ -1,14 +1,6 @@
 import { v4 as uuid } from "uuid";
 
-export const weekdays = [
-  "monday",
-  "tuesday",
-  "wednesday",
-  "thursday",
-  "friday",
-  "saturday",
-  "sunday",
-];
+export const weekdays = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"];
 
 export const hours = [
   "0:00",
@@ -35,6 +27,7 @@ export const hours = [
   "21:00",
   "22:00",
   "23:00",
+  "",
 ];
 
 export const days = new Array(7).fill("");

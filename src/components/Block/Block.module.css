@@ -5,7 +5,7 @@
 }
 
 .block {
-  position: relative;
+  position: absolute;
   width: 135px;
   border-radius: 0px 15px 15px 0px;
   background-color: #61616162;
@@ -16,7 +16,7 @@
   pointer-events: auto;
   color: white;
   filter: drop-shadow(5px 5px 5px rgba(0, 0, 0, 0.162));
-  margin-right: 15px;
+  left: 0;
 }
 
 .block:hover {
