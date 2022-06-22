@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import styles from "./Block.module.css";
 import ColorPicker from "./ColorPicker";
 import EditIcons from "./EditIcons";
@@ -13,12 +13,17 @@ const Block = ({
   isTemporary,
   deleteHandler,
   editBlockDetails,
-  currentPosition,
 }) => {
   const [iconsActive, setIconsActive] = useState(false);
   const [editName, setEditName] = useState(false);
   const [newName, setNewName] = useState(name);
   const [colorPicker, setColorPicker] = useState(false);
+  const [newHour, setNewHour] = useState(0);
+  const [dragging, setDragging] = useState(false);
+
+  const getHour = (x, y) => {
+    return document.elementFromPoint(x, y).dataset.hourindex;
+  };
 
   const changeColor = (value) => {
     editBlockDetails(id, "color", value);
@@ -52,6 +57,11 @@ const Block = ({
     }
   };
 
+  useEffect(() => {
+    newHour && editBlockDetails(id, "to", parseInt(newHour));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [newHour]);
+  console.log(dragging);
   return isTemporary ? (
     <div
       className={styles.tempBlock}
@@ -60,7 +70,12 @@ const Block = ({
       <p className={styles.heading}>{name}</p>
     </div>
   ) : (
-    <div className={styles.blockContainer}>
+    <div
+      className={styles.blockContainer}
+      style={{
+        height: `${duration * 31.5}px`,
+      }}
+    >
       <div
         className={styles.block}
         style={{
@@ -97,7 +112,6 @@ const Block = ({
           editNameClose={editNameClose}
           showColorPicker={setColorPicker}
           colorPicker={colorPicker}
-          // resizeBlock={resizeBlock}
         />
         {iconsActive && (
           <ColorPicker
@@ -107,6 +121,31 @@ const Block = ({
           />
         )}
       </div>
+      {iconsActive && (
+        <span
+          className={`${styles.handle}`}
+          onDragStart={() => {
+            setIconsActive(true);
+            setDragging(true);
+          }}
+          onDrag={(e) => {
+            let hour = getHour(e.clientX, e.clientY);
+            hour && setNewHour(hour);
+          }}
+          onDragEnd={() => {
+            setNewHour(0);
+            setDragging(false);
+          }}
+          onMouseEnter={() => {
+            setIconsActive(true);
+          }}
+          onMouseLeave={() => !dragging && setIconsActive(false)}
+        >
+          <p className={styles.arrowIcon} autoFocus="autofocus">
+            ↕
+          </p>
+        </span>
+      )}
     </div>
   );
 };

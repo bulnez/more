@@ -1,3 +1,9 @@
+.blockContainer {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+}
+
 .block {
   position: relative;
   width: 135px;
@@ -48,6 +54,7 @@
   margin: 0;
   font-size: 12px;
   text-align: left;
+  user-select: none;
 }
 
 .iconsRow {
@@ -138,19 +145,28 @@
   left: 0;
 }
 
-.down {
+.handle {
   position: absolute;
-  width: 120px;
-  height: 5px;
-  resize: vertical;
-  pointer-events: none;
+  background-color: grey;
+  width: 15px;
+  height: 35px;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  border-radius: 0px 15px 15px 0px;
+  color: white;
+  right: 1px;
+  pointer-events: all;
+  margin-bottom: 15px;
 }
 
-.down:hover {
-  cursor: n-resize;
+.handle:hover {
+  cursor: grab;
+  transform: scaleY(1.1);
+  transition: ease 0.1s;
+  user-select: all;
 }
 
-.up:active {
-  cursor: grabbing;
-  pointer-events: none;
+.arrowIcon::selection {
+  background-color: grey;
 }
