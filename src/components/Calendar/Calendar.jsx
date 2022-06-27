@@ -9,6 +9,8 @@ import {
 import Block from "../Block/Block";
 import styles from "./Calendar.module.css";
 import { v4 as uuid } from "uuid";
+import moment from "moment";
+import { getNext7Days } from "../../common/getCurrent7Days";
 
 const Calendar = () => {
   const [blocks, setBlocks] = useState(initBlocks);
@@ -23,6 +25,13 @@ const Calendar = () => {
     from: 0,
     to: 0,
   });
+
+  let dayDate = moment().date();
+  let currWeekDay = moment().day();
+  let daysInMonth = moment().daysInMonth();
+  let getMonth = moment().month();
+
+  const date = getNext7Days(dayDate, currWeekDay, daysInMonth);
 
   const handleTemporaryBlockDown = (day, hr) => {
     const isPlaceOccupied = blocks.some(
@@ -100,11 +109,11 @@ const Calendar = () => {
       <div className={styles.container}>
         {/* WEEKDAYS */}
         <div className={styles.header}>
-          {weekdays.map((weekday) => (
+          {date.map((date) => (
             <>
               <div className={styles.weekdays}>
-                <span className={styles.date}>15</span>
-                <p className={styles.weekday}>{weekday}</p>
+                <span className={styles.date}>{date.day}</span>
+                <p className={styles.weekday}>{weekdays[date.weekday - 1]}</p>
               </div>
             </>
           ))}
@@ -120,6 +129,13 @@ const Calendar = () => {
           </div>
           <div className={styles.grid}>
             {/* DAYS */}
+            <div
+              className={styles.timeStamp}
+              style={{ marginTop: `${moment().hour() * 60}px` }}
+            >
+              <span className={styles.circle} />
+              <div className={styles.timeStampLine} />
+            </div>
             {days.map((day, dayIndex) => (
               <div className={styles.dailyHours}>
                 {hours.map((hr, hoursIndex) => (

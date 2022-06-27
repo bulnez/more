@@ -137,3 +137,32 @@
   border-radius: 10px;
   background: #6d6d6d2a;
 }
+
+.timeStamp {
+  position: absolute;
+  width: 1057.5px;
+  height: 5px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  z-index: 3;
+  margin-left: -7.5px;
+}
+
+.timeStampLine {
+  width: 1057.5px;
+  height: 5px;
+  background-color: red;
+  margin-left: -2px;
+}
+
+.circle {
+  background-color: red;
+  position: relative;
+  height: 15px;
+  width: 15px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
