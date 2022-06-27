@@ -1,5 +1,10 @@
 CHANGELOG
 
+MORE-010 --- 0.9.0 
+[add] Function for getting current date
+
+===
+
 MORE-009 --- 0.8.0 
 [add] Styling improvements of the calendar
 [fix] Small bugfixes related to the adding of new blocks

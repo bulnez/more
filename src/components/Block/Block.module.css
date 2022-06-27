@@ -20,7 +20,6 @@
 }
 
 .block:hover {
-  z-index: 2;
   user-select: all;
 }
 
@@ -91,6 +90,7 @@
 
 .colorContainer {
   position: absolute;
+  z-index: 3;
   width: 125px;
   height: 30px;
   background-color: white;
