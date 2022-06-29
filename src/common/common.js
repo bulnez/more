@@ -39,9 +39,9 @@ export const initBlocks = [
     day: 1,
     from: 0,
     to: 5,
+    week: 27,
     name: "Working",
     isTemporary: false,
-    editMode: false,
   },
   {
     id: uuid(),
@@ -49,9 +49,9 @@ export const initBlocks = [
     day: 3,
     from: 15,
     to: 18,
+    week: 27,
     name: "Fitness",
     isTemporary: false,
-    editMode: false,
   },
   {
     id: uuid(),
@@ -59,9 +59,9 @@ export const initBlocks = [
     day: 7,
     from: 10,
     to: 12,
+    week: 27,
     name: "Cook",
     isTemporary: false,
-    editMode: false,
   },
 ];
 

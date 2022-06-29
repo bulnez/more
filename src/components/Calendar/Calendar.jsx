@@ -11,8 +11,25 @@ import styles from "./Calendar.module.css";
 import { v4 as uuid } from "uuid";
 import moment from "moment";
 import { getNext7Days } from "../../common/getCurrent7Days";
+import Controller from "../Controller/Controller";
 
 const Calendar = () => {
+  let dayDate = moment().date();
+  let currWeekDay = moment().day();
+  let daysInMonth = moment().daysInMonth();
+  let year = moment().year();
+
+  const getWeek = (week = 0) => {
+    let start = moment().add(week, "weeks").startOf("week").format("DD");
+    let end = moment().add(week, "weeks").endOf("week").format("DD");
+    let weekNum = moment().add(week, "weeks").week();
+    return {
+      week: weekNum,
+      start: parseInt(start) + 1,
+      end: parseInt(end) + 1,
+    };
+  };
+
   const [blocks, setBlocks] = useState(initBlocks);
   const [tempBlock, setTempBlock] = useState(initTempBlock);
   const [currentPosition, setCurrentPosition] = useState({
@@ -25,20 +42,24 @@ const Calendar = () => {
     from: 0,
     to: 0,
   });
+  const [currWeek, setCurrWeek] = useState(getWeek());
+  console.log(currWeek);
+  const [date, setDate] = useState(
+    getNext7Days(dayDate, currWeekDay, daysInMonth)
+  );
 
-  let dayDate = moment().date();
-  let currWeekDay = moment().day();
-  let daysInMonth = moment().daysInMonth();
-  let getMonth = moment().month();
-
-  const date = getNext7Days(dayDate, currWeekDay, daysInMonth);
-
-  const handleTemporaryBlockDown = (day, hr) => {
+  const handleTemporaryBlockDown = (day, hr, week) => {
     const isPlaceOccupied = blocks.some(
-      (block) => block.day === day && block.from === hr
+      (block) => block.day === day && block.from === hr && block.week === week
     );
     !isPlaceOccupied &&
-      setTempBlock({ ...tempBlock, isTemporary: true, day, from: hr });
+      setTempBlock({
+        ...tempBlock,
+        isTemporary: true,
+        day,
+        from: hr,
+        week: currWeek.week,
+      });
   };
 
   const handleTemporaryBlockMove = (day, hr) => {
@@ -55,6 +76,7 @@ const Calendar = () => {
         id: uuid(),
         isTemporary: false,
         name: "Not temporary",
+        week: currWeek.week,
       });
   };
 
@@ -106,6 +128,12 @@ const Calendar = () => {
 
   return (
     <>
+      <Controller
+        currWeek={currWeek}
+        setCurrWeek={setCurrWeek}
+        getWeek={getWeek}
+        year={year}
+      />
       <div className={styles.container}>
         {/* WEEKDAYS */}
         <div className={styles.header}>
@@ -144,7 +172,11 @@ const Calendar = () => {
                     data-dayIndex={dayIndex}
                     data-hourIndex={hoursIndex}
                     onMouseDown={() =>
-                      handleTemporaryBlockDown(dayIndex + 1, hoursIndex)
+                      handleTemporaryBlockDown(
+                        dayIndex + 1,
+                        hoursIndex,
+                        currWeek.week
+                      )
                     }
                     onMouseMove={() =>
                       handleTemporaryBlockMove(dayIndex + 1, hoursIndex)
@@ -155,25 +187,24 @@ const Calendar = () => {
                     {blocks.map(
                       (block) =>
                         block.day === dayIndex + 1 &&
-                        block.from === hoursIndex && (
-                          <>
-                            <Block
-                              id={block.id}
-                              isTemporary={block.isTemporary}
-                              name={block.name}
-                              color={block.color}
-                              day={block.day}
-                              from={block.from}
-                              to={block.to}
-                              duration={block.to - block.from}
-                              deleteHandler={() => deleteBlock(block.id)}
-                              editBlockDetails={editBlockDetails}
-                              editMultipleDetails={editMultipleDetails}
-                              currentPosition={currentPosition}
-                              blockClone={blockClone}
-                              setBlockClone={setBlockClone}
-                            />
-                          </>
+                        block.from === hoursIndex &&
+                        block.week === currWeek.week && (
+                          <Block
+                            id={block.id}
+                            isTemporary={block.isTemporary}
+                            name={block.name}
+                            color={block.color}
+                            day={block.day}
+                            from={block.from}
+                            to={block.to}
+                            duration={block.to - block.from}
+                            deleteHandler={() => deleteBlock(block.id)}
+                            editBlockDetails={editBlockDetails}
+                            editMultipleDetails={editMultipleDetails}
+                            currentPosition={currentPosition}
+                            blockClone={blockClone}
+                            setBlockClone={setBlockClone}
+                          />
                         )
                     )}
                     {/* TEMPORARY BLOCK */}
