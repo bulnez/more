@@ -10,23 +10,50 @@ import Block from "../Block/Block";
 import styles from "./Calendar.module.css";
 import { v4 as uuid } from "uuid";
 import moment from "moment";
-import { getNext7Days } from "../../common/getCurrent7Days";
 import Controller from "../Controller/Controller";
 
 const Calendar = () => {
-  let dayDate = moment().date();
-  let currWeekDay = moment().day();
-  let daysInMonth = moment().daysInMonth();
-  let year = moment().year();
-
   const getWeek = (week = 0) => {
-    let start = moment().add(week, "weeks").startOf("week").format("DD");
-    let end = moment().add(week, "weeks").endOf("week").format("DD");
-    let weekNum = moment().add(week, "weeks").week();
+    const year = moment().year();
+    const start = parseInt(
+      moment().add(week, "isoWeeks").startOf("isoWeeks").format("DD")
+    );
+    const weekNum = moment().add(week, "isoWeeks").isoWeek();
+    const d = moment().add(week, "isoWeeks").dayOfYear();
+    const month =
+      start > 25
+        ? new Date(year, 0, d).getMonth()
+        : new Date(year, 0, d).getMonth() + 1;
+    const daysInMonth = moment(month, "MM").daysInMonth();
+    let days = [];
+    let startDay = start;
+    for (let i = 0; i < 7; i++) {
+      if (startDay > daysInMonth) {
+        startDay = 1;
+        days.push(startDay);
+        startDay++;
+      } else {
+        days.push(startDay);
+        startDay++;
+      }
+    }
+
+    const monthNameStart = moment(month, "M").format("MMMM");
+    const monthNameEnd =
+      days[0] > daysInMonth - 6
+        ? moment(month + 1, "M").format("MMMM")
+        : moment(month, "M").format("MMMM");
+
     return {
+      year,
+      month,
+      daysInMonth,
+      monthNameStart,
+      monthNameEnd,
       week: weekNum,
-      start: parseInt(start) + 1,
-      end: parseInt(end) + 1,
+      start: days[0],
+      end: days[6],
+      days,
     };
   };
 
@@ -42,11 +69,8 @@ const Calendar = () => {
     from: 0,
     to: 0,
   });
-  const [currWeek, setCurrWeek] = useState(getWeek());
-  console.log(currWeek);
-  const [date, setDate] = useState(
-    getNext7Days(dayDate, currWeekDay, daysInMonth)
-  );
+  const initWeek = getWeek();
+  const [currWeek, setCurrWeek] = useState(initWeek);
 
   const handleTemporaryBlockDown = (day, hr, week) => {
     const isPlaceOccupied = blocks.some(
@@ -92,7 +116,6 @@ const Calendar = () => {
       }
       return block;
     });
-    console.log(newState);
     setBlocks(newState);
   };
 
@@ -109,7 +132,6 @@ const Calendar = () => {
       }
       return block;
     });
-    console.log(newState);
     setBlocks(newState);
   };
 
@@ -132,16 +154,15 @@ const Calendar = () => {
         currWeek={currWeek}
         setCurrWeek={setCurrWeek}
         getWeek={getWeek}
-        year={year}
       />
       <div className={styles.container}>
         {/* WEEKDAYS */}
         <div className={styles.header}>
-          {date.map((date) => (
+          {currWeek.days.map((day, i) => (
             <>
               <div className={styles.weekdays}>
-                <span className={styles.date}>{date.day}</span>
-                <p className={styles.weekday}>{weekdays[date.weekday - 1]}</p>
+                <span className={styles.date}>{day}</span>
+                <p className={styles.weekday}>{weekdays[i]}</p>
               </div>
             </>
           ))}

@@ -1,5 +1,15 @@
 CHANGELOG
 
+MORE-012 --- 0.11.0 
+[add] Changing weeks with accurate weeks and days
+
+===
+
+MORE-011 --- 0.10.0 
+[add] Changing weeks but without accuracy
+
+===
+
 MORE-010 --- 0.9.0 
 [add] Function for getting current date
 

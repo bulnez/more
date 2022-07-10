@@ -1,6 +1,6 @@
 export const getNext7Days = (startDate, initWeekday, daysInMonth) => {
   let startDay = startDate;
-  let startWeekday = initWeekday;
+  let startWeekday = 0;
   let arr = [];
   for (let i = 0; i < 7; i++) {
     let obj = { day: 0, weekday: 0 };
