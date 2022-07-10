@@ -3,6 +3,7 @@ import styles from "./Controller.module.css";
 
 const Controller = ({ currWeek, setCurrWeek, getWeek, year }) => {
   const [week, setWeek] = useState(0);
+
   useEffect(() => {
     setCurrWeek(getWeek(week));
   }, [week]);
@@ -14,8 +15,8 @@ const Controller = ({ currWeek, setCurrWeek, getWeek, year }) => {
       </span>
       <p
         className={styles.month}
-      >{`June ${currWeek.start} - July ${currWeek.end}`}</p>
-      <p className={styles.year}>{year}</p>
+      >{`${currWeek.monthNameStart} ${currWeek.start} - ${currWeek.monthNameEnd} ${currWeek.end}`}</p>
+      <p className={styles.year}>{currWeek.year}</p>
       <span className={styles.arrow} onClick={() => setWeek(week + 1)}>
         {" "}
         &gt;
