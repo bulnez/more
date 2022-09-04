@@ -1,0 +1,33 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  padding-right: 10px;
+  height: 250px;
+  overflow-y: scroll;
+}
+
+.todo {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  border: 1px solid black;
+  gap: 20px;
+}
+
+.todoDone {
+  border: none;
+}
+
+.circle {
+  padding-left: 10px;
+}
+
+.circle:hover {
+  cursor: pointer;
+}
+
+.done {
+  text-decoration: line-through;
+  color: rgba(0, 0, 0, 0.151);
+}
