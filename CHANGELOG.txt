@@ -1,5 +1,10 @@
 CHANGELOG
 
+MORE-013 --- 0.12.0 
+[add] Autoscroll to timestamp
+
+===
+
 MORE-012 --- 0.11.0 
 [add] Changing weeks with accurate weeks and days
 

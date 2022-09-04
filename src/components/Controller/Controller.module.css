@@ -1,25 +1,36 @@
 .container {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: fit-content;
-  padding: 5px 25px;
-  height: 50px;
-  border-radius: 50px;
-  background-color: rgb(189, 189, 189);
-  gap: 10px;
-  margin: 25px 0 0 25px;
+  width: 400px;
+  margin: 55px;
+}
+
+.names {
+  font-size: 23px;
+}
+
+.names p {
+  padding: 0;
+  margin: 0;
+}
+
+.arrows {
+  display: flex;
+  flex-direction: row;
+  gap: 15px;
+  z-index: 2;
 }
 
 .arrow {
-  font-size: 24px;
+  font-size: 15px;
   font-weight: 700;
 }
 
 .arrow:hover {
   cursor: pointer;
-  transform: scale(1.1);
+  transform: scale(1.05);
   transition: 0.2s ease;
 }
 
@@ -30,6 +41,17 @@
 }
 
 .year {
-  font-size: 14px;
-  color: rgb(102, 102, 102);
+  position: absolute;
+  font-size: 100px;
+  width: 300px;
+  color: rgba(102, 102, 102, 0.048);
+}
+
+.unselectable {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }

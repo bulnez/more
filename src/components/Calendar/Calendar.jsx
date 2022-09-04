@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   weekdays,
   hours,
@@ -148,8 +148,17 @@ const Calendar = () => {
     }
   }, [tempBlock, blocks]);
 
+  const refContainer = useRef(null);
+  const refTimeStamp = useRef(null);
+  const scrollToRef = (ref) =>
+    refContainer.current.scrollTo(0, ref.current.offsetTop - 200);
+
+  useEffect(() => {
+    scrollToRef(refTimeStamp);
+  }, []);
+
   return (
-    <>
+    <div className={styles.bigContainer}>
       <Controller
         currWeek={currWeek}
         setCurrWeek={setCurrWeek}
@@ -167,7 +176,7 @@ const Calendar = () => {
             </>
           ))}
         </div>
-        <div className={styles.innerContainer}>
+        <div className={styles.innerContainer} ref={refContainer}>
           {/* HOURS */}
           <div className={styles.hours}>
             {hours.map((hr) => (
@@ -181,6 +190,7 @@ const Calendar = () => {
             <div
               className={styles.timeStamp}
               style={{ marginTop: `${moment().hour() * 60}px` }}
+              ref={refTimeStamp}
             >
               <span className={styles.circle} />
               <div className={styles.timeStampLine} />
@@ -254,7 +264,7 @@ const Calendar = () => {
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
