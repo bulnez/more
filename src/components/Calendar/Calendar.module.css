@@ -107,6 +107,14 @@ html {
   flex-direction: row;
 }
 
+.innerContainer:hover {
+  cursor: grab;
+}
+
+.innerContainer:active {
+  cursor: grabbing;
+}
+
 .grid {
   position: relative;
   display: flex;
@@ -177,4 +185,12 @@ html {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.arrow {
+  font-weight: 900;
+  font-size: 44px;
+  z-index: 3;
+  position: absolute;
+  color: rgb(88, 2, 2);
 }

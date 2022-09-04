@@ -21,6 +21,15 @@
 
 .block:hover {
   user-select: all;
+  cursor: pointer;
+}
+
+.block:hover {
+  cursor: grab;
+}
+
+.block:active {
+  cursor: grabbing;
 }
 
 .tempBlock {
