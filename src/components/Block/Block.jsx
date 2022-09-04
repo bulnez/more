@@ -119,7 +119,6 @@ const Block = ({
             parseInt(newFrom) + duration > 24
               ? 24
               : parseInt(newFrom) + duration;
-          console.log(from, newFrom);
           newFrom !== 0 &&
             editMultipleDetails(
               id,

@@ -71,6 +71,7 @@ const Calendar = () => {
   });
   const initWeek = getWeek();
   const [currWeek, setCurrWeek] = useState(initWeek);
+  const currWeekDay = moment().isoWeekday();
 
   const handleTemporaryBlockDown = (day, hr, week) => {
     const isPlaceOccupied = blocks.some(
@@ -99,7 +100,7 @@ const Calendar = () => {
         ...tempBlock,
         id: uuid(),
         isTemporary: false,
-        name: "Not temporary",
+        name: "Change the name on hover",
         week: currWeek.week,
       });
   };
@@ -193,6 +194,16 @@ const Calendar = () => {
               ref={refTimeStamp}
             >
               <span className={styles.circle} />
+              <span
+                className={styles.arrow}
+                style={{
+                  marginLeft: `${
+                    (currWeekDay !== 1 ? currWeekDay - 1 : 1) * 150
+                  }px`,
+                }}
+              >
+                &gt;
+              </span>
               <div className={styles.timeStampLine} />
             </div>
             {days.map((day, dayIndex) => (
@@ -243,7 +254,7 @@ const Calendar = () => {
                       tempBlock.from === hoursIndex && (
                         <Block
                           isTemporary={tempBlock.isTemporary}
-                          name="temporary"
+                          name=""
                           duration={tempBlock.to - tempBlock.from}
                         />
                       )}
