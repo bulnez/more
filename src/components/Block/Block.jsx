@@ -27,13 +27,8 @@ const Block = ({
   const [newFrom, setNewFrom] = useState(0);
   const [dragging, setDragging] = useState(false);
 
-  const getHour = (x, y) => {
-    return document.elementFromPoint(x, y).dataset.hourindex;
-  };
-
-  const getDay = (x, y) => {
-    return document.elementFromPoint(x, y).dataset.dayindex;
-  };
+  const getHour = (x, y) => document.elementFromPoint(x, y).dataset.hourindex;
+  const getDay = (x, y) => document.elementFromPoint(x, y).dataset.dayindex;
 
   const changeColor = (value) => {
     editBlockDetails(id, "color", value);
@@ -67,7 +62,13 @@ const Block = ({
     }
   };
 
-  const onDragBlock = (e) => {
+  const onDragStartHandler = () => {
+    setIconsActive(true);
+    setDragging(true);
+    setBlockClone({ active: true, day, from, to });
+  };
+
+  const onDragHandler = (e) => {
     setIconsActive(true);
     let tempDay = getDay(e.clientX, e.clientY);
     let tempHour = getHour(e.clientX, e.clientY);
@@ -82,6 +83,21 @@ const Block = ({
       from: parseInt(tempHour),
       to: newTo,
     });
+  };
+
+  const onDragEndHandler = () => {
+    const newTo =
+      parseInt(newFrom) + duration > 24 ? 24 : parseInt(newFrom) + duration;
+    newFrom !== 0 &&
+      editMultipleDetails(
+        id,
+        ["day", "from", "to"],
+        [parseInt(newDay), parseInt(newFrom), newTo]
+      );
+    setNewDay(0);
+    setNewFrom(0);
+    setDragging(false);
+    setBlockClone({ ...blockClone, active: false });
   };
 
   useEffect(() => {
@@ -108,28 +124,9 @@ const Block = ({
         }}
         onMouseEnter={() => setIconsActive(true)}
         onMouseLeave={() => !colorPicker && setIconsActive(false)}
-        onDragStart={() => {
-          setIconsActive(true);
-          setDragging(true);
-          setBlockClone({ active: true, day, from, to });
-        }}
-        onDrag={onDragBlock}
-        onDragEnd={() => {
-          const newTo =
-            parseInt(newFrom) + duration > 24
-              ? 24
-              : parseInt(newFrom) + duration;
-          newFrom !== 0 &&
-            editMultipleDetails(
-              id,
-              ["day", "from", "to"],
-              [parseInt(newDay), parseInt(newFrom), newTo]
-            );
-          setNewDay(0);
-          setNewFrom(0);
-          setDragging(false);
-          setBlockClone({ ...blockClone, active: false });
-        }}
+        onDragStart={onDragStartHandler}
+        onDrag={onDragHandler}
+        onDragEnd={onDragEndHandler}
       >
         {editName ? (
           <textarea

@@ -1,26 +1,16 @@
-import React, { useState, useEffect } from "react";
-import { v4 as uuid } from "uuid";
+import React, { useState } from "react";
+import { initTodos } from "../../common/common";
 import AddTodo from "./AddToDo";
 import styles from "./Todos.module.css";
 
 const Todos = () => {
-  const [todos, setTodos] = useState([
-    { id: uuid(), name: "Buy groceries", done: false },
-    { id: uuid(), name: "Go to dentist", done: false },
-    { id: uuid(), name: "Run outside for 30 mins", done: true },
-    { id: uuid(), name: "Read 30 pages", done: false },
-    { id: uuid(), name: "Cook dinner (eggs & bacon)", done: false },
-  ]);
+  const [todos, setTodos] = useState(initTodos);
 
-  const markDone = (i) => {
-    const newState = [...todos];
-    newState[i].done = true;
-    setTodos(newState);
-  };
-
-  const markUndone = (i) => {
-    const newState = [...todos];
-    newState[i].done = false;
+  const setDone = (id, done) => {
+    //Praq nov obekt za da otgovarq na immutabilityto
+    const newState = todos.map((todo) =>
+      todo.id === id ? { ...todo, done } : todo
+    );
     setTodos(newState);
   };
 
@@ -31,9 +21,13 @@ const Todos = () => {
   return (
     <>
       <div className={styles.container}>
-        {todos.map((todo, i) => (
-          <div className={`${styles.todo} ${todo.done && styles.todoDone}`}>
+        {todos.map((todo) => (
+          <div
+            key={todo.id}
+            className={`${styles.todo} ${todo.done && styles.todoDone}`}
+          >
             {todo.done ? (
+              //TODO: export svgs to outside component
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
@@ -41,7 +35,7 @@ const Todos = () => {
                 fill="currentColor"
                 class="bi bi-check-circle-fill"
                 viewBox="0 0 16 16"
-                onClick={() => markUndone(i)}
+                onClick={() => setDone(todo.id, false)}
               >
                 <path
                   className={styles.circle}
@@ -58,15 +52,14 @@ const Todos = () => {
                   stroke="grey"
                   stroke-width="2"
                   fill="transparent"
-                  onClick={() => markDone(i)}
+                  onClick={() => setDone(todo.id, true)}
                 />
               </svg>
             )}
-            <p className={`${todo.done ? styles.done : ""}`}>{todo.name}</p>
+            <p className={todo.done && styles.done}>{todo.name}</p>
           </div>
         ))}
       </div>
-      <div className={styles.line} />
       <AddTodo addTodo={addTodo} />
     </>
   );

@@ -1,77 +1,29 @@
 import React, { useState, useEffect, useRef } from "react";
+import moment from "moment";
+import { v4 as uuid } from "uuid";
 import {
   weekdays,
   hours,
   days,
   initBlocks,
   initTempBlock,
+  initBlockCloneState,
 } from "../../common/common";
 import Block from "../Block/Block";
 import styles from "./Calendar.module.css";
-import { v4 as uuid } from "uuid";
-import moment from "moment";
 import Controller from "../Controller/Controller";
+import useWeek from "../../common/useWeek";
+
+//TODO: Fix imports/reorder them
 
 const Calendar = () => {
-  const getWeek = (week = 0) => {
-    const year = moment().year();
-    const start = parseInt(
-      moment().add(week, "isoWeeks").startOf("isoWeeks").format("DD")
-    );
-    const weekNum = moment().add(week, "isoWeeks").isoWeek();
-    const d = moment().add(week, "isoWeeks").dayOfYear();
-    const month =
-      start > 25
-        ? new Date(year, 0, d).getMonth()
-        : new Date(year, 0, d).getMonth() + 1;
-    const daysInMonth = moment(month, "MM").daysInMonth();
-    let days = [];
-    let startDay = start;
-    for (let i = 0; i < 7; i++) {
-      if (startDay > daysInMonth) {
-        startDay = 1;
-        days.push(startDay);
-        startDay++;
-      } else {
-        days.push(startDay);
-        startDay++;
-      }
-    }
-
-    const monthNameStart = moment(month, "M").format("MMMM");
-    const monthNameEnd =
-      days[0] > daysInMonth - 6
-        ? moment(month + 1, "M").format("MMMM")
-        : moment(month, "M").format("MMMM");
-
-    return {
-      year,
-      month,
-      daysInMonth,
-      monthNameStart,
-      monthNameEnd,
-      week: weekNum,
-      start: days[0],
-      end: days[6],
-      days,
-    };
-  };
+  const initWeek = useWeek();
 
   const [blocks, setBlocks] = useState(initBlocks);
   const [tempBlock, setTempBlock] = useState(initTempBlock);
-  const [currentPosition, setCurrentPosition] = useState({
-    day: 0,
-    hr: 0,
-  });
-  const [blockClone, setBlockClone] = useState({
-    active: false,
-    day: 0,
-    from: 0,
-    to: 0,
-  });
-  const initWeek = getWeek();
+  const [currentPosition, setCurrentPosition] = useState({ day: 0, hr: 0 });
+  const [blockClone, setBlockClone] = useState(initBlockCloneState);
   const [currWeek, setCurrWeek] = useState(initWeek);
-  const currWeekDay = moment().isoWeekday();
 
   const handleTemporaryBlockDown = (day, hr, week) => {
     const isPlaceOccupied = blocks.some(
@@ -100,7 +52,7 @@ const Calendar = () => {
         ...tempBlock,
         id: uuid(),
         isTemporary: false,
-        name: "Change the name on hover",
+        name: "Example name",
         week: currWeek.week,
       });
   };
@@ -128,7 +80,7 @@ const Calendar = () => {
           [detailsArr[0]]: valuesArr[0],
           [detailsArr[1]]: valuesArr[1],
           [detailsArr[2]]: valuesArr[2],
-          //Need to make it scalable, not hardcoded
+          // Need to make it scalable, not hardcoded
         };
       }
       return block;
@@ -158,23 +110,33 @@ const Calendar = () => {
     scrollToRef(refTimeStamp);
   }, []);
 
+  /* 
+  ---WEEKDAYS: The top section of the calendar, where weekdays are shown from MON to SUN with the calendar days (e.g. 01-06)
+  ---HOURS: The left section of the calendar, where the hours from 00:00 to 23:00 are shown
+  ---TIMESTAMP: The red line with a big red dot which indicates the weekday as well as the current round hour
+  ---GRID: The grid where the time blocks are shown
+  ---BLOCKS: All of the time blocks for the current week
+  ---TEMPORARY BLOCK: Whenever the user starts a block on mouse click on the grid, it is shown as a transparent block. On mouse up, 
+  the temporary block becomes a non-temporary or just block. There can be only ONE active temporary block.
+  ---CLONE BLOCK: Whenever the user tries to move a block through the grid, on mouse click and move it is shown as a transparent one.
+  On mouse up, the block takes the place of the clone block and the clone block dissapears.
+  */
+
   return (
     <div className={styles.bigContainer}>
       <Controller
         currWeek={currWeek}
         setCurrWeek={setCurrWeek}
-        getWeek={getWeek}
+        getWeek={useWeek}
       />
       <div className={styles.container}>
         {/* WEEKDAYS */}
         <div className={styles.header}>
           {currWeek.days.map((day, i) => (
-            <>
-              <div className={styles.weekdays}>
-                <span className={styles.date}>{day}</span>
-                <p className={styles.weekday}>{weekdays[i]}</p>
-              </div>
-            </>
+            <div className={styles.weekdays}>
+              <span className={styles.date}>{day}</span>
+              <p className={styles.weekday}>{weekdays[i]}</p>
+            </div>
           ))}
         </div>
         <div className={styles.innerContainer} ref={refContainer}>
@@ -187,25 +149,21 @@ const Calendar = () => {
             ))}
           </div>
           <div className={styles.grid}>
-            {/* DAYS */}
+            {/* TIMESTAMP */}
             <div
               className={styles.timeStamp}
               style={{ marginTop: `${moment().hour() * 60}px` }}
               ref={refTimeStamp}
             >
-              <span className={styles.circle} />
               <span
-                className={styles.arrow}
+                className={styles.circle}
                 style={{
-                  marginLeft: `${
-                    (currWeekDay !== 1 ? currWeekDay - 1 : 1) * 150
-                  }px`,
+                  marginLeft: `${(moment().isoWeekday() - 1) * 150}px`,
                 }}
-              >
-                &gt;
-              </span>
+              />
               <div className={styles.timeStampLine} />
             </div>
+            {/* GRID */}
             {days.map((day, dayIndex) => (
               <div className={styles.dailyHours}>
                 {hours.map((hr, hoursIndex) => (
@@ -271,7 +229,6 @@ const Calendar = () => {
                 ))}
               </div>
             ))}
-            {/* DAYS */}
           </div>
         </div>
       </div>

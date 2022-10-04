@@ -3,21 +3,12 @@ import { v4 as uuid } from "uuid";
 import styles from "./Todos.module.css";
 
 const AddTodo = ({ addTodo }) => {
-  const initTodo = {
-    id: "",
-    name: "",
-    done: false,
-  };
-  const [todo, setTodo] = useState(initTodo);
+  const [todo, setTodo] = useState("");
 
-  const handleTodo = (e) => {
-    setTodo({ ...todo, name: e.target.value, id: uuid() });
-  };
-
-  const clickHandler = (todo) => {
-    if (todo.name !== "") {
-      addTodo(todo);
-      setTodo(initTodo);
+  const clickHandler = () => {
+    if (todo !== "") {
+      addTodo({ id: uuid(), name: todo, done: false });
+      setTodo("");
     }
   };
 
@@ -27,11 +18,11 @@ const AddTodo = ({ addTodo }) => {
       <div className={styles.fieldContainer}>
         <input
           type="text"
-          onChange={handleTodo}
+          onChange={(e) => setTodo(e.target.value)}
           className={styles.inputField}
-          value={todo.name}
+          value={todo}
         />
-        <button onClick={() => clickHandler(todo)} className={styles.btn}>
+        <button onClick={clickHandler} className={styles.btn}>
           Add
         </button>
       </div>
