@@ -1,5 +1,7 @@
 import { v4 as uuid } from "uuid";
 
+export const cellHeight = 60;
+
 export const weekdays = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"];
 
 export const hours = [
@@ -29,8 +31,6 @@ export const hours = [
   "23:00",
   "",
 ];
-
-export const days = new Array(7).fill("");
 
 export const initBlocks = [
   {

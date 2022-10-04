@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { GoCheck } from "react-icons/go";
 import styles from "./Block.module.css";
 
 const ColorPicker = ({ show, color, changeColor }) => {
@@ -22,6 +21,7 @@ const ColorPicker = ({ show, color, changeColor }) => {
 
   useEffect(() => {
     newColor !== color && changeColor(setColor(newColor));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [newColor]);
 
   return (

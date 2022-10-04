@@ -1,35 +1,45 @@
 import React, { useState, useEffect, useRef } from "react";
-import moment from "moment";
 import { v4 as uuid } from "uuid";
+import moment from "moment";
+import useWeek from "../../hooks/useWeek";
 import {
   weekdays,
   hours,
-  days,
   initBlocks,
-  initTempBlock,
   initBlockCloneState,
+  cellHeight,
 } from "../../common/common";
 import Block from "../Block/Block";
 import styles from "./Calendar.module.css";
 import Controller from "../Controller/Controller";
-import useWeek from "../../common/useWeek";
 
-//TODO: Fix imports/reorder them
+const initTempBlock = {
+  id: 0,
+  color: "#616161",
+  day: 0,
+  from: 0,
+  to: 0,
+  name: "",
+  isTemporary: true,
+};
 
 const Calendar = () => {
-  const initWeek = useWeek();
+  const refContainer = useRef(null);
+  const refTimeStamp = useRef(null);
 
+  const [weekOffset, setWeekOffset] = useState(0);
   const [blocks, setBlocks] = useState(initBlocks);
   const [tempBlock, setTempBlock] = useState(initTempBlock);
   const [currentPosition, setCurrentPosition] = useState({ day: 0, hr: 0 });
   const [blockClone, setBlockClone] = useState(initBlockCloneState);
-  const [currWeek, setCurrWeek] = useState(initWeek);
+
+  const currWeek = useWeek(weekOffset);
 
   const handleTemporaryBlockDown = (day, hr, week) => {
     const isPlaceOccupied = blocks.some(
       (block) => block.day === day && block.from === hr && block.week === week
     );
-    !isPlaceOccupied &&
+    if (!isPlaceOccupied)
       setTempBlock({
         ...tempBlock,
         isTemporary: true,
@@ -40,14 +50,14 @@ const Calendar = () => {
   };
 
   const handleTemporaryBlockMove = (day, hr) => {
-    setCurrentPosition({ ...currentPosition, day, hr });
+    setCurrentPosition({ day, hr });
     if (tempBlock.isTemporary) {
       setTempBlock({ ...tempBlock, to: hr });
     }
   };
 
   const handleTemporaryBlockUp = () => {
-    tempBlock.from &&
+    if (tempBlock.from)
       setTempBlock({
         ...tempBlock,
         id: uuid(),
@@ -63,6 +73,7 @@ const Calendar = () => {
   };
 
   const editBlockDetails = (id, detail, value) => {
+    //Edit handler for color or name
     const newState = blocks.map((block) => {
       if (block.id === id) {
         return { ...block, [detail]: value };
@@ -72,7 +83,8 @@ const Calendar = () => {
     setBlocks(newState);
   };
 
-  const editMultipleDetails = (id, detailsArr, valuesArr) => {
+  const editPosition = (id, detailsArr, valuesArr) => {
+    //Edit the day, start hour and end hour when dragging a block
     const newState = blocks.map((block) => {
       if (block.id === id) {
         return {
@@ -80,7 +92,6 @@ const Calendar = () => {
           [detailsArr[0]]: valuesArr[0],
           [detailsArr[1]]: valuesArr[1],
           [detailsArr[2]]: valuesArr[2],
-          // Need to make it scalable, not hardcoded
         };
       }
       return block;
@@ -89,6 +100,7 @@ const Calendar = () => {
   };
 
   useEffect(() => {
+    //Responsible for handling the temporary blocks
     if (
       tempBlock !== initTempBlock &&
       !tempBlock.isTemporary &&
@@ -96,18 +108,13 @@ const Calendar = () => {
     ) {
       setBlocks([...blocks, tempBlock]);
       setTempBlock(initTempBlock);
-    } else if (!tempBlock.isTemporary && tempBlock.to - tempBlock.from < 2) {
+    } else if (!tempBlock.isTemporary && tempBlock.to > tempBlock.from) {
       setTempBlock(initTempBlock);
     }
   }, [tempBlock, blocks]);
 
-  const refContainer = useRef(null);
-  const refTimeStamp = useRef(null);
-  const scrollToRef = (ref) =>
-    refContainer.current.scrollTo(0, ref.current.offsetTop - 200);
-
   useEffect(() => {
-    scrollToRef(refTimeStamp);
+    refContainer.current.scrollTo(0, refTimeStamp.current.offsetTop - 200);
   }, []);
 
   /* 
@@ -126,14 +133,14 @@ const Calendar = () => {
     <div className={styles.bigContainer}>
       <Controller
         currWeek={currWeek}
-        setCurrWeek={setCurrWeek}
-        getWeek={useWeek}
+        weekOffset={weekOffset}
+        setWeekOffset={setWeekOffset}
       />
       <div className={styles.container}>
         {/* WEEKDAYS */}
         <div className={styles.header}>
           {currWeek.days.map((day, i) => (
-            <div className={styles.weekdays}>
+            <div className={styles.weekdays} key={i}>
               <span className={styles.date}>{day}</span>
               <p className={styles.weekday}>{weekdays[i]}</p>
             </div>
@@ -142,8 +149,8 @@ const Calendar = () => {
         <div className={styles.innerContainer} ref={refContainer}>
           {/* HOURS */}
           <div className={styles.hours}>
-            {hours.map((hr) => (
-              <div className={styles.hour}>
+            {hours.map((hr, i) => (
+              <div className={styles.hour} key={i}>
                 <p className={styles.hr}>{hr}</p>
               </div>
             ))}
@@ -152,7 +159,7 @@ const Calendar = () => {
             {/* TIMESTAMP */}
             <div
               className={styles.timeStamp}
-              style={{ marginTop: `${moment().hour() * 60}px` }}
+              style={{ marginTop: `${moment().hour() * cellHeight}px` }}
               ref={refTimeStamp}
             >
               <span
@@ -164,13 +171,14 @@ const Calendar = () => {
               <div className={styles.timeStampLine} />
             </div>
             {/* GRID */}
-            {days.map((day, dayIndex) => (
-              <div className={styles.dailyHours}>
-                {hours.map((hr, hoursIndex) => (
+            {currWeek.days.map((_, dayIndex) => (
+              <div className={styles.dailyHours} key={dayIndex}>
+                {hours.map((_, hoursIndex) => (
                   <div
+                    key={hoursIndex}
                     className={styles.dailyHour}
-                    data-dayIndex={dayIndex}
-                    data-hourIndex={hoursIndex}
+                    data-dayindex={dayIndex}
+                    data-hourindex={hoursIndex}
                     onMouseDown={() =>
                       handleTemporaryBlockDown(
                         dayIndex + 1,
@@ -185,12 +193,13 @@ const Calendar = () => {
                   >
                     {/* BLOCKS */}
                     {blocks.map(
-                      (block) =>
+                      (block, i) =>
                         block.day === dayIndex + 1 &&
                         block.from === hoursIndex &&
                         block.week === currWeek.week && (
                           <Block
                             id={block.id}
+                            key={i}
                             isTemporary={block.isTemporary}
                             name={block.name}
                             color={block.color}
@@ -200,7 +209,7 @@ const Calendar = () => {
                             duration={block.to - block.from}
                             deleteHandler={() => deleteBlock(block.id)}
                             editBlockDetails={editBlockDetails}
-                            editMultipleDetails={editMultipleDetails}
+                            editPosition={editPosition}
                             currentPosition={currentPosition}
                             blockClone={blockClone}
                             setBlockClone={setBlockClone}

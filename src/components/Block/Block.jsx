@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styles from "./Block.module.css";
+import { cellHeight } from "../../common/common";
 import ColorPicker from "./ColorPicker";
 import EditIcons from "./EditIcons";
 
@@ -14,7 +15,7 @@ const Block = ({
   isTemporary,
   deleteHandler,
   editBlockDetails,
-  editMultipleDetails,
+  editPosition,
   setBlockClone,
   blockClone,
 }) => {
@@ -27,6 +28,7 @@ const Block = ({
   const [newFrom, setNewFrom] = useState(0);
   const [dragging, setDragging] = useState(false);
 
+  //Get coordinates of the grid based on the mouse cursor position, when moving a clone block
   const getHour = (x, y) => document.elementFromPoint(x, y).dataset.hourindex;
   const getDay = (x, y) => document.elementFromPoint(x, y).dataset.dayindex;
 
@@ -34,14 +36,6 @@ const Block = ({
     editBlockDetails(id, "color", value);
     setColorPicker(false);
     setIconsActive(false);
-  };
-
-  const changeName = (e) => {
-    setNewName(e.target.value);
-  };
-
-  const startEditingName = () => {
-    setEditName(true);
   };
 
   const editNameSuccess = () => {
@@ -74,14 +68,14 @@ const Block = ({
     let tempHour = getHour(e.clientX, e.clientY);
     tempDay && setNewDay(parseInt(tempDay) + 1);
     tempHour && setNewFrom(tempHour);
-    const newTo =
+    const to =
       parseInt(newFrom) + duration > 24 ? 24 : parseInt(newFrom) + duration;
-    const nday = parseInt(tempDay) + 1;
+    const day = parseInt(tempDay) + 1;
     setBlockClone({
       ...blockClone,
-      day: nday,
+      day,
       from: parseInt(tempHour),
-      to: newTo,
+      to,
     });
   };
 
@@ -89,7 +83,7 @@ const Block = ({
     const newTo =
       parseInt(newFrom) + duration > 24 ? 24 : parseInt(newFrom) + duration;
     newFrom !== 0 &&
-      editMultipleDetails(
+      editPosition(
         id,
         ["day", "from", "to"],
         [parseInt(newDay), parseInt(newFrom), newTo]
@@ -106,20 +100,21 @@ const Block = ({
   }, [newHour]);
 
   return isTemporary ? (
-    <div className={styles.tempBlock} style={{ height: `${duration * 60}px` }}>
-      <p className={styles.heading}>{name}</p>
-    </div>
+    <div
+      className={styles.tempBlock}
+      style={{ height: `${duration * cellHeight}px` }}
+    />
   ) : (
     <div
       className={styles.blockContainer}
       style={{
-        height: `${duration * 60}px`,
+        height: `${duration * cellHeight}px`,
       }}
     >
       <div
         className={styles.block}
         style={{
-          height: `${duration * 60}px`,
+          height: `${duration * cellHeight}px`,
           backgroundColor: color,
         }}
         onMouseEnter={() => setIconsActive(true)}
@@ -134,7 +129,7 @@ const Block = ({
             autoFocus="autofocus"
             value={newName}
             className={styles.nameInput}
-            onChange={changeName}
+            onChange={(e) => setNewName(e.target.value)}
             onKeyDown={handleKeyDown}
             onFocus={(e) => (e.target.selectionStart = e.target.value.length)}
           />
@@ -150,7 +145,7 @@ const Block = ({
           iconsActive={iconsActive}
           deleteHandler={deleteHandler}
           isEditingActive={editName}
-          startEdit={startEditingName}
+          startEdit={() => setEditName(true)}
           editNameSuccess={editNameSuccess}
           editNameClose={editNameClose}
           showColorPicker={setColorPicker}
@@ -173,16 +168,13 @@ const Block = ({
           }}
           onDrag={(e) => {
             let hour = getHour(e.clientX, e.clientY);
-            console.log(hour, from);
             hour && hour > from && setNewHour(hour);
           }}
           onDragEnd={() => {
             setNewHour(0);
             setDragging(false);
           }}
-          onMouseEnter={() => {
-            setIconsActive(true);
-          }}
+          onMouseEnter={() => setIconsActive(true)}
           onMouseLeave={() => !dragging && setIconsActive(false)}
         >
           <p className={styles.arrowIcon} autoFocus="autofocus">
