@@ -4,7 +4,6 @@ import { FiEdit, FiCheck } from "react-icons/fi";
 import { BiColorFill } from "react-icons/bi";
 import { MdDelete } from "react-icons/md";
 import { GrFormClose } from "react-icons/gr";
-import { IoMdResize } from "react-icons/io";
 
 const EditIcons = ({
   iconsActive,

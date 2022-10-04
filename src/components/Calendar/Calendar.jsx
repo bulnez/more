@@ -1,83 +1,45 @@
 import React, { useState, useEffect, useRef } from "react";
+import { v4 as uuid } from "uuid";
+import moment from "moment";
+import useWeek from "../../hooks/useWeek";
 import {
   weekdays,
   hours,
-  days,
   initBlocks,
-  initTempBlock,
+  initBlockCloneState,
+  cellHeight,
 } from "../../common/common";
 import Block from "../Block/Block";
 import styles from "./Calendar.module.css";
-import { v4 as uuid } from "uuid";
-import moment from "moment";
 import Controller from "../Controller/Controller";
 
+const initTempBlock = {
+  id: 0,
+  color: "#616161",
+  day: 0,
+  from: 0,
+  to: 0,
+  name: "",
+  isTemporary: true,
+};
+
 const Calendar = () => {
-  const getWeek = (week = 0) => {
-    const year = moment().year();
-    const start = parseInt(
-      moment().add(week, "isoWeeks").startOf("isoWeeks").format("DD")
-    );
-    const weekNum = moment().add(week, "isoWeeks").isoWeek();
-    const d = moment().add(week, "isoWeeks").dayOfYear();
-    const month =
-      start > 25
-        ? new Date(year, 0, d).getMonth()
-        : new Date(year, 0, d).getMonth() + 1;
-    const daysInMonth = moment(month, "MM").daysInMonth();
-    let days = [];
-    let startDay = start;
-    for (let i = 0; i < 7; i++) {
-      if (startDay > daysInMonth) {
-        startDay = 1;
-        days.push(startDay);
-        startDay++;
-      } else {
-        days.push(startDay);
-        startDay++;
-      }
-    }
+  const refContainer = useRef(null);
+  const refTimeStamp = useRef(null);
 
-    const monthNameStart = moment(month, "M").format("MMMM");
-    const monthNameEnd =
-      days[0] > daysInMonth - 6
-        ? moment(month + 1, "M").format("MMMM")
-        : moment(month, "M").format("MMMM");
-
-    return {
-      year,
-      month,
-      daysInMonth,
-      monthNameStart,
-      monthNameEnd,
-      week: weekNum,
-      start: days[0],
-      end: days[6],
-      days,
-    };
-  };
-
+  const [weekOffset, setWeekOffset] = useState(0);
   const [blocks, setBlocks] = useState(initBlocks);
   const [tempBlock, setTempBlock] = useState(initTempBlock);
-  const [currentPosition, setCurrentPosition] = useState({
-    day: 0,
-    hr: 0,
-  });
-  const [blockClone, setBlockClone] = useState({
-    active: false,
-    day: 0,
-    from: 0,
-    to: 0,
-  });
-  const initWeek = getWeek();
-  const [currWeek, setCurrWeek] = useState(initWeek);
-  const currWeekDay = moment().isoWeekday();
+  const [currentPosition, setCurrentPosition] = useState({ day: 0, hr: 0 });
+  const [blockClone, setBlockClone] = useState(initBlockCloneState);
+
+  const currWeek = useWeek(weekOffset);
 
   const handleTemporaryBlockDown = (day, hr, week) => {
     const isPlaceOccupied = blocks.some(
       (block) => block.day === day && block.from === hr && block.week === week
     );
-    !isPlaceOccupied &&
+    if (!isPlaceOccupied)
       setTempBlock({
         ...tempBlock,
         isTemporary: true,
@@ -88,19 +50,19 @@ const Calendar = () => {
   };
 
   const handleTemporaryBlockMove = (day, hr) => {
-    setCurrentPosition({ ...currentPosition, day, hr });
+    setCurrentPosition({ day, hr });
     if (tempBlock.isTemporary) {
       setTempBlock({ ...tempBlock, to: hr });
     }
   };
 
   const handleTemporaryBlockUp = () => {
-    tempBlock.from &&
+    if (tempBlock.from)
       setTempBlock({
         ...tempBlock,
         id: uuid(),
         isTemporary: false,
-        name: "Change the name on hover",
+        name: "Example name",
         week: currWeek.week,
       });
   };
@@ -111,6 +73,7 @@ const Calendar = () => {
   };
 
   const editBlockDetails = (id, detail, value) => {
+    //Edit handler for color or name
     const newState = blocks.map((block) => {
       if (block.id === id) {
         return { ...block, [detail]: value };
@@ -120,7 +83,8 @@ const Calendar = () => {
     setBlocks(newState);
   };
 
-  const editMultipleDetails = (id, detailsArr, valuesArr) => {
+  const editPosition = (id, detailsArr, valuesArr) => {
+    //Edit the day, start hour and end hour when dragging a block
     const newState = blocks.map((block) => {
       if (block.id === id) {
         return {
@@ -128,7 +92,6 @@ const Calendar = () => {
           [detailsArr[0]]: valuesArr[0],
           [detailsArr[1]]: valuesArr[1],
           [detailsArr[2]]: valuesArr[2],
-          //Need to make it scalable, not hardcoded
         };
       }
       return block;
@@ -137,6 +100,7 @@ const Calendar = () => {
   };
 
   useEffect(() => {
+    //Responsible for handling the temporary blocks
     if (
       tempBlock !== initTempBlock &&
       !tempBlock.isTemporary &&
@@ -144,75 +108,77 @@ const Calendar = () => {
     ) {
       setBlocks([...blocks, tempBlock]);
       setTempBlock(initTempBlock);
-    } else if (!tempBlock.isTemporary && tempBlock.to - tempBlock.from < 2) {
+    } else if (!tempBlock.isTemporary && tempBlock.to > tempBlock.from) {
       setTempBlock(initTempBlock);
     }
   }, [tempBlock, blocks]);
 
-  const refContainer = useRef(null);
-  const refTimeStamp = useRef(null);
-  const scrollToRef = (ref) =>
-    refContainer.current.scrollTo(0, ref.current.offsetTop - 200);
-
   useEffect(() => {
-    scrollToRef(refTimeStamp);
+    refContainer.current.scrollTo(0, refTimeStamp.current.offsetTop - 200);
   }, []);
+
+  /* 
+  ---WEEKDAYS: The top section of the calendar, where weekdays are shown from MON to SUN with the calendar days (e.g. 01-06)
+  ---HOURS: The left section of the calendar, where the hours from 00:00 to 23:00 are shown
+  ---TIMESTAMP: The red line with a big red dot which indicates the weekday as well as the current round hour
+  ---GRID: The grid where the time blocks are shown
+  ---BLOCKS: All of the time blocks for the current week
+  ---TEMPORARY BLOCK: Whenever the user starts a block on mouse click on the grid, it is shown as a transparent block. On mouse up, 
+  the temporary block becomes a non-temporary or just block. There can be only ONE active temporary block.
+  ---CLONE BLOCK: Whenever the user tries to move a block through the grid, on mouse click and move it is shown as a transparent one.
+  On mouse up, the block takes the place of the clone block and the clone block dissapears.
+  */
 
   return (
     <div className={styles.bigContainer}>
       <Controller
         currWeek={currWeek}
-        setCurrWeek={setCurrWeek}
-        getWeek={getWeek}
+        weekOffset={weekOffset}
+        setWeekOffset={setWeekOffset}
       />
       <div className={styles.container}>
         {/* WEEKDAYS */}
         <div className={styles.header}>
           {currWeek.days.map((day, i) => (
-            <>
-              <div className={styles.weekdays}>
-                <span className={styles.date}>{day}</span>
-                <p className={styles.weekday}>{weekdays[i]}</p>
-              </div>
-            </>
+            <div className={styles.weekdays} key={i}>
+              <span className={styles.date}>{day}</span>
+              <p className={styles.weekday}>{weekdays[i]}</p>
+            </div>
           ))}
         </div>
         <div className={styles.innerContainer} ref={refContainer}>
           {/* HOURS */}
           <div className={styles.hours}>
-            {hours.map((hr) => (
-              <div className={styles.hour}>
+            {hours.map((hr, i) => (
+              <div className={styles.hour} key={i}>
                 <p className={styles.hr}>{hr}</p>
               </div>
             ))}
           </div>
           <div className={styles.grid}>
-            {/* DAYS */}
+            {/* TIMESTAMP */}
             <div
               className={styles.timeStamp}
-              style={{ marginTop: `${moment().hour() * 60}px` }}
+              style={{ marginTop: `${moment().hour() * cellHeight}px` }}
               ref={refTimeStamp}
             >
-              <span className={styles.circle} />
               <span
-                className={styles.arrow}
+                className={styles.circle}
                 style={{
-                  marginLeft: `${
-                    (currWeekDay !== 1 ? currWeekDay - 1 : 1) * 150
-                  }px`,
+                  marginLeft: `${(moment().isoWeekday() - 1) * 150}px`,
                 }}
-              >
-                &gt;
-              </span>
+              />
               <div className={styles.timeStampLine} />
             </div>
-            {days.map((day, dayIndex) => (
-              <div className={styles.dailyHours}>
-                {hours.map((hr, hoursIndex) => (
+            {/* GRID */}
+            {currWeek.days.map((_, dayIndex) => (
+              <div className={styles.dailyHours} key={dayIndex}>
+                {hours.map((_, hoursIndex) => (
                   <div
+                    key={hoursIndex}
                     className={styles.dailyHour}
-                    data-dayIndex={dayIndex}
-                    data-hourIndex={hoursIndex}
+                    data-dayindex={dayIndex}
+                    data-hourindex={hoursIndex}
                     onMouseDown={() =>
                       handleTemporaryBlockDown(
                         dayIndex + 1,
@@ -227,12 +193,13 @@ const Calendar = () => {
                   >
                     {/* BLOCKS */}
                     {blocks.map(
-                      (block) =>
+                      (block, i) =>
                         block.day === dayIndex + 1 &&
                         block.from === hoursIndex &&
                         block.week === currWeek.week && (
                           <Block
                             id={block.id}
+                            key={i}
                             isTemporary={block.isTemporary}
                             name={block.name}
                             color={block.color}
@@ -242,7 +209,7 @@ const Calendar = () => {
                             duration={block.to - block.from}
                             deleteHandler={() => deleteBlock(block.id)}
                             editBlockDetails={editBlockDetails}
-                            editMultipleDetails={editMultipleDetails}
+                            editPosition={editPosition}
                             currentPosition={currentPosition}
                             blockClone={blockClone}
                             setBlockClone={setBlockClone}
@@ -271,7 +238,6 @@ const Calendar = () => {
                 ))}
               </div>
             ))}
-            {/* DAYS */}
           </div>
         </div>
       </div>

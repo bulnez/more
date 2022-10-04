@@ -1,5 +1,7 @@
 import { v4 as uuid } from "uuid";
 
+export const cellHeight = 60;
+
 export const weekdays = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"];
 
 export const hours = [
@@ -29,8 +31,6 @@ export const hours = [
   "23:00",
   "",
 ];
-
-export const days = new Array(7).fill("");
 
 export const initBlocks = [
   {
@@ -104,3 +104,18 @@ export const initTempBlock = {
   name: "Temporary",
   isTemporary: true,
 };
+
+export const initBlockCloneState = {
+  active: false,
+  day: 0,
+  from: 0,
+  to: 0,
+};
+
+export const initTodos = [
+  { id: uuid(), name: "Buy groceries", done: false },
+  { id: uuid(), name: "Go to dentist", done: false },
+  { id: uuid(), name: "Run outside for 30 mins", done: true },
+  { id: uuid(), name: "Read 30 pages", done: false },
+  { id: uuid(), name: "Cook dinner (eggs & bacon)", done: false },
+];
